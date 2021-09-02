@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8890e9f38b44a7eab4d9112dda14b95, type: 3}
+  m_Name: PrefabsInstaller
+  m_EditorClassIdentifier: 
+  _prefabsConfig:
+    CellPrefab: {fileID: 5734694384670265534, guid: e1ef13d520df14671ab042b4a5bbd034,
+      type: 3}
+    TetriminoView: {fileID: 2664020422198113039, guid: b905152dc89064fe39b0599a422b4619,
+      type: 3}
+    TetriminoPart: {fileID: 4684504830255053277, guid: 06d082e2c3c5046dc87294ad1b92501e,
+      type: 3}
+    PlayerInputController: {fileID: 2093885022328095907, guid: 4e4bcc19d1012470c8bcdc93939c8476,
+      type: 3}
