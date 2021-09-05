@@ -39,12 +39,12 @@ namespace Spawner.Implementation
             return result;
         }
 
-        private TetriminoParts CreatePartsForType(TetriminoType tetriminoType)
+        private TetriminoPartsHolder CreatePartsForType(TetriminoType tetriminoType)
         {
             var tetriminoConfig = _tetriminoesConfig.Tetriminoes.FirstOrDefault(t => t.TetriminoType == tetriminoType);
             if (tetriminoConfig != null)
             {
-                return new TetriminoParts(tetriminoConfig.TetriminoParts);
+                return new TetriminoPartsHolder(tetriminoConfig.TetriminoParts);
             }
 
             throw new KeyNotFoundException(

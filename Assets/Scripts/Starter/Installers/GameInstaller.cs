@@ -24,6 +24,7 @@ namespace Starter.Installers
             TetriminoInstaller.Install(Container);
             LevelInstaller.Install(Container);
             Container.BindInterfacesTo<GameStarter>().AsSingle();
+            Container.BindInterfacesTo<GameLineChecker>().AsSingle();
         }
 
         private void InstallPlayer()
@@ -35,7 +36,7 @@ namespace Starter.Installers
 
         private void InstallMap()
         {
-            Container.Bind<MapDataModel>().AsSingle();
+            Container.BindInterfacesAndSelfTo<MapDataModel>().AsSingle();
             Container.BindInterfacesAndSelfTo<MapDrawer>().AsTransient();
             Container.BindFactory<CellView, CellView.Factory>()
                 .FromComponentInNewPrefab(_prefabsConfig.CellPrefab)

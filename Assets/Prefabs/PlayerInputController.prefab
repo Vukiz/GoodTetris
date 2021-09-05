@@ -51,6 +51,8 @@ MonoBehaviour:
   - _actionType: 2
     _keyCode: 274
   - _actionType: 4
-    _keyCode: 273
+    _keyCode: 32
   - _actionType: 5
+    _keyCode: 273
+  - _actionType: 6
     _keyCode: 122

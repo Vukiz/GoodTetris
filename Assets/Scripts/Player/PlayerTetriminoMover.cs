@@ -19,7 +19,7 @@ namespace Player
         public void Initialize()
         {
             _playerInputController.ActionButtonUp += OnPlayerButtonUp;
-            _playerInputController.ActionButtonHold += OnPlayerButtonHold;
+            _playerInputController.ActionButtonHold += OnPlayerButtonUp;
         }
 
         private void OnPlayerButtonUp(PlayerActionButton playerActionButton)
@@ -28,14 +28,16 @@ namespace Player
             {
                 MoveTetrimino(playerActionButton.ActionType);
             }
+
+            if (playerActionButton.ActionType == ActionType.Drop)
+            {
+                DropTetrimino();
+            }
         }
 
-        private void OnPlayerButtonHold(PlayerActionButton playerActionButton)
+        private void DropTetrimino()
         {
-            if (playerActionButton.ActionType.IsMoveAction())
-            {
-                MoveTetrimino(playerActionButton.ActionType);
-            }
+            _tetriminoMover.DropTetrimino();
         }
 
         private void MoveTetrimino(ActionType playerAction)
@@ -46,7 +48,6 @@ namespace Player
         public void Dispose()
         {
             _playerInputController.ActionButtonUp -= OnPlayerButtonUp;
-            _playerInputController.ActionButtonHold -= OnPlayerButtonHold;
         }
     }
 }

@@ -1,79 +1,89 @@
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using Config;
 using Data;
 using Extensions;
+using Map;
 using UnityEngine;
 using Zenject;
 
 namespace Tetrimino
 {
-    public class TetriminoView : MonoBehaviour, IDisposable
-    {
-        private TetriminoDataModel _tetriminoDataModel;
-        private TetriminoPartView.Factory _tetriminoPartFactory;
+	public class TetriminoView : MonoBehaviour, IDisposable
+	{
+		private TetriminoDataModel _tetriminoDataModel;
+		private TetriminoPartView.Factory _tetriminoPartFactory;
 
-        private MapConfig _mapConfig;
+		private MapConfig _mapConfig;
+		private MapDataModel _mapDataModel;
 
-        private readonly List<TetriminoPartView> _parts = new List<TetriminoPartView>();
+		[Inject]
+		public void Construct(TetriminoPartView.Factory tetriminoPartFactory,
+			MapConfig mapConfig, MapDataModel mapDataModel)
+		{
+			_tetriminoPartFactory = tetriminoPartFactory;
+			_mapConfig = mapConfig;
+			_mapDataModel = mapDataModel;
+		}
 
-        [Inject]
-        public void Construct(TetriminoPartView.Factory tetriminoPartFactory,
-            MapConfig mapConfig)
-        {
-            _tetriminoPartFactory = tetriminoPartFactory;
-            _mapConfig = mapConfig;
-        }
+		public void Init(TetriminoDataModel tetriminoDataModel)
+		{
+			_tetriminoDataModel = tetriminoDataModel;
+			CreateParts();
+		}
 
-        public void Init(TetriminoDataModel tetriminoDataModel)
-        {
-            _tetriminoDataModel = tetriminoDataModel;
-            Draw();
-        }
+		private void CreateParts()
+		{
+			var parts = _tetriminoDataModel.PartsHolder.PartsPositions.ToList();
+			var cellSize = _mapConfig.CellSize;
+			transform.position = _tetriminoDataModel.TetriminoPosition.GetCellWorldPosition(_mapConfig);
+			CreatePart(_tetriminoDataModel.TetriminoCenter, cellSize);
+			foreach (var partsPosition in parts)
+			{
+				CreatePart(partsPosition, cellSize);
+			}
+		}
 
-        public void UpdateRotatedParts()
-        {
-            ClearParts();
-            Draw();
-        }
+		private void CreatePart(CellPosition partPosition, float cellSize)
+		{
+			var tetriminoPart = _tetriminoPartFactory.Create();
+			tetriminoPart.transform.SetParent(transform);
+			tetriminoPart.transform.localPosition = partPosition.GetCellWorldPosition(_mapConfig);
+			tetriminoPart.SetSize(cellSize);
+			tetriminoPart.PartCleared += OnPartCleared;
 
-        private void Draw()
-        {
-            var parts = _tetriminoDataModel.RotatedParts;
-            var cellSize = _mapConfig.CellSize;
-            transform.position = _tetriminoDataModel.TetriminoPosition.GetCellWorldPosition(_mapConfig);
-            CreatePart(_tetriminoDataModel.TetriminoCenter, cellSize);
-            foreach (var partsPosition in parts.PartsPositions)
-            {
-                CreatePart(partsPosition, cellSize);
-            }
-        }
+			_tetriminoDataModel.PartsHolder.SetPart(partPosition, tetriminoPart);
+			_mapDataModel.SetTetriminoPartViewToCell(partPosition + _tetriminoDataModel.TetriminoPosition, tetriminoPart);
+		}
 
-        private void CreatePart(CellPosition partPosition, float cellSize)
-        {
-            var tetriminoPart = _tetriminoPartFactory.Create();
-            tetriminoPart.transform.SetParent(transform);
-            tetriminoPart.transform.localPosition = partPosition.GetCellWorldPosition(_mapConfig);
-            tetriminoPart.SetSize(cellSize);
-            _parts.Add(tetriminoPart);
-        }
+		private void OnPartCleared(TetriminoPartView tetriminoPartView)
+		{
+			_tetriminoDataModel.PartsHolder.RemovePart(tetriminoPartView);
+			if (!_tetriminoDataModel.PartsHolder.Parts.Any())
+			{
+				Destroy(gameObject);
+			}
+		}
 
-        public void Dispose()
-        {
-        }
+		public void Dispose()
+		{
+			ClearParts();
+		}
 
-        private void ClearParts()
-        {
-            foreach (var partView in _parts)
-            {
-                Destroy(partView);
-            }
+		private void ClearParts()
+		{
+			var parts = _tetriminoDataModel.PartsHolder;
+			foreach (var partView in parts.Parts.Values)
+			{
+				partView.PartCleared -= OnPartCleared;
+				Destroy(partView.gameObject);
+			}
 
-            _parts.Clear();
-        }
+			_tetriminoDataModel.PartsHolder.Parts.Clear();
+		}
 
-        public class Factory : PlaceholderFactory<TetriminoView>
-        {
-        }
-    }
+		public class Factory : PlaceholderFactory<TetriminoView>
+		{
+		}
+	}
 }

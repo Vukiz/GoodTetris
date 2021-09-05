@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Config;
 using Data;
 using Extensions;
@@ -27,9 +28,9 @@ namespace Map
         {
             var grid = _mapDataModel.Grid;
 
-            foreach (var cell in grid.Keys)
+            foreach (var cell in grid.SelectMany(row => row))
             {
-                DrawCell(cell);
+                DrawCell(cell.CellPosition);
             }
         }
 

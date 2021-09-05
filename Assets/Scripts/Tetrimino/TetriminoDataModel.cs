@@ -1,47 +1,52 @@
+using System.Collections.Generic;
 using System.Linq;
 using Data;
 using Extensions;
+using Map.Cells;
 using Tetrimino.Data;
+using TetriminoMoving.Data;
 
 namespace Tetrimino
 {
-    public class TetriminoDataModel
-    {
-        private TetriminoParts Parts { get; }
-        public CellPosition TetriminoCenter => CellPosition.Zero;
-        public TetriminoType TetriminoType { get; set; }
-        public TetriminoRotation TetriminoRotation { get; set; }
-        public CellPosition TetriminoPosition { get; set; }
+	public class TetriminoDataModel
+	{
+		public TetriminoPartsHolder PartsHolder { get; }
+		public CellPosition TetriminoCenter => CellPosition.Zero;
+		public TetriminoType TetriminoType { get; set; }
+		public TetriminoRotation TetriminoRotation { get; set; }
+		public CellPosition TetriminoPosition { get; set; }
 
-        public TetriminoParts RotatedParts => Parts.Rotate(TetriminoRotation);
+		public TetriminoRotation NextRotation(RotateDirection rotateDirection) =>
+			TetriminoRotation.Rotate(rotateDirection);
 
-        public TetriminoDataModel(TetriminoParts tetriminoParts)
-        {
-            Parts = tetriminoParts;
-        }
+		public TetriminoDataModel(TetriminoPartsHolder tetriminoPartsHolder)
+		{
+			PartsHolder = tetriminoPartsHolder;
+		}
 
-        public TetriminoParts AllPartsInWorldCoords(CellPosition relativeCellPosition)
-        {
-            return AllPartsInWorldCoords(relativeCellPosition, TetriminoRotation);
-        }
+		public IEnumerable<CellMoveData> PartsTransformationRelativeTo(CellPosition relativeCellPosition)
+		{
+			return AllPartsInWorldCoords(relativeCellPosition, TetriminoRotation);
+		}
 
-        public TetriminoParts AllPartsInWorldCoords(TetriminoRotation newTetriminoRotation)
-        {
-            return AllPartsInWorldCoords(TetriminoPosition, newTetriminoRotation);
-        }
+		public IEnumerable<CellMoveData> PartsPositionsInWorldCoordsWithRotation(TetriminoRotation newTetriminoRotation)
+		{
+			return AllPartsInWorldCoords(TetriminoPosition, newTetriminoRotation);
+		}
 
-        public TetriminoParts AllPartsInWorldCoords()
-        {
-            return AllPartsInWorldCoords(TetriminoPosition, TetriminoRotation);
-        }
+		private IEnumerable<CellMoveData> AllPartsInWorldCoords(CellPosition relativeCellPosition,
+			TetriminoRotation newTetriminoRotation)
+		{
+			var rotatedParts = PartsHolder.RotateWithMatrix(newTetriminoRotation);
+			var cellPositions = new List<CellMoveData>();
+			foreach (var rotatedPart in rotatedParts)
+			{
+				var oldPosition = TetriminoPosition + rotatedPart.PositionTransformation.OldPosition;
+				var newPosition = relativeCellPosition + rotatedPart.PositionTransformation.NewPosition;
+				cellPositions.Add(new CellMoveData(oldPosition, newPosition));
+			}
 
-        private TetriminoParts AllPartsInWorldCoords(CellPosition relativeCellPosition,
-            TetriminoRotation newTetriminoRotation)
-        {
-            var rotatedParts = Parts.Rotate(newTetriminoRotation);
-            var cellPositions = rotatedParts.PartsPositions.Select(p => p + relativeCellPosition).ToList();
-            cellPositions.Add(TetriminoCenter + relativeCellPosition);
-            return new TetriminoParts(cellPositions);
-        }
-    }
+			return cellPositions;
+		}
+	}
 }

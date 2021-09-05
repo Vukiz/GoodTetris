@@ -40,7 +40,7 @@ namespace Spawner
 
         private CellPosition GetTetriminoPosition()
         {
-            return new CellPosition(_mapConfig.MapWidth / 2, _mapConfig.MapHeight);
+            return new CellPosition(_mapConfig.MapWidth / 2, _mapConfig.MapHeight - 2);
         }
 
         private void OnTetriminoDown()

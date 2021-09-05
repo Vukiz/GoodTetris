@@ -6,6 +6,7 @@ namespace Player
         Right,
         Down,
         Up,
+        Drop,
         RotateClockwise,
         RotateCounterClockwise,
         Hold,

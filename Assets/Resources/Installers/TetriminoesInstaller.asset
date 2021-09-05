@@ -24,11 +24,11 @@ MonoBehaviour:
         Y: 1
     - TetriminoType: 1
       TetriminoParts:
+      - X: -1
+        Y: 0
       - X: 1
         Y: 0
       - X: 2
-        Y: 0
-      - X: 3
         Y: 0
     - TetriminoType: 2
       TetriminoParts:
@@ -56,17 +56,17 @@ MonoBehaviour:
         Y: 0
     - TetriminoType: 5
       TetriminoParts:
-      - X: 0
-        Y: 1
-      - X: 1
-        Y: 0
-      - X: 2
-        Y: 0
-    - TetriminoType: 6
-      TetriminoParts:
-      - X: 0
+      - X: -1
         Y: 1
       - X: -1
         Y: 0
-      - X: -2
+      - X: 1
+        Y: 0
+    - TetriminoType: 6
+      TetriminoParts:
+      - X: 1
+        Y: 1
+      - X: 1
+        Y: 0
+      - X: -1
         Y: 0
