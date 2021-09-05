@@ -1,4 +1,6 @@
 using Config;
+using Data;
+using TMPro;
 using UnityEngine;
 using Zenject;
 
@@ -8,6 +10,7 @@ namespace Map.Cells
     {
         [SerializeField] private SpriteRenderer _spriteRenderer;
         [SerializeField] private GameObject _partDebugFilled;
+        [SerializeField] private TMP_Text _text;
         private MapConfig _mapConfig;
         
         [Inject]
@@ -30,6 +33,15 @@ namespace Map.Cells
         public void SetPartDebugActive(bool isPartNotNull)
         {
             _partDebugFilled.SetActive(isPartNotNull);
+        }
+
+        public void SetText()
+        {
+            _text.SetText("");
+        }
+        public void SetText(CellPosition cellPosition)
+        {
+            _text.SetText($"{cellPosition.X} | {cellPosition.Y}");
         }
     }
 }

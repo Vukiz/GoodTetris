@@ -139,7 +139,15 @@ namespace TetriminoMoving
 			var allOldCellPositions = partsTransformation.Select(p => p.PositionTransformation.OldPosition);
 			var allNewCellPositions = partsTransformation.Select(p => p.PositionTransformation.NewPosition);
 			var onlyNewPositions = allNewCellPositions.Except(allOldCellPositions);
-			var isMapSpaceEmpty = onlyNewPositions.All(p => !IsCellFilled(p));
+			var isMapSpaceEmpty = true;
+			foreach (var p in onlyNewPositions)
+			{
+				if (IsCellFilled(p))
+				{
+					isMapSpaceEmpty = false;
+					break;
+				}
+			}
 
 			return isMapSpaceEmpty;
 		}

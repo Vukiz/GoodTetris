@@ -33,6 +33,11 @@ namespace Map.Cells
 			if (isPartNotNull)
 			{
 				tetriminoPartView.MoveToNewPosition(CellPosition);
+				_mapDrawer.GetCellView(CellPosition).SetText(CellPosition);
+			}
+			else
+			{
+				_mapDrawer.GetCellView(CellPosition).SetText();
 			}
 
 			_mapDrawer.GetCellView(CellPosition).SetPartDebugActive(isPartNotNull);
