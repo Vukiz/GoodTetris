@@ -68,10 +68,9 @@ namespace TetriminoMoving
 			{
 				return;
 			}
-
-			currentTetrimino.SetNewTetriminoRotation(newTetriminoRotation);
-
+			
 			UpdateMapCells(newParts);
+			currentTetrimino.SetNewTetriminoRotation(newTetriminoRotation);
 		}
 
 		private void TryMoveTetrimino(MoveDirection moveDirection, TetriminoHolder tetriminoHolder,
@@ -139,7 +138,8 @@ namespace TetriminoMoving
 		{
 			var allOldCellPositions = partsTransformation.Select(p => p.PositionTransformation.OldPosition);
 			var allNewCellPositions = partsTransformation.Select(p => p.PositionTransformation.NewPosition);
-			var isMapSpaceEmpty = allNewCellPositions.Except(allOldCellPositions).All(p => !IsCellFilled(p));
+			var onlyNewPositions = allNewCellPositions.Except(allOldCellPositions);
+			var isMapSpaceEmpty = onlyNewPositions.All(p => !IsCellFilled(p));
 
 			return isMapSpaceEmpty;
 		}

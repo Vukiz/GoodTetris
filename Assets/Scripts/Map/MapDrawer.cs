@@ -22,6 +22,7 @@ namespace Map
             _mapConfig = mapConfig;
             _cellViewFactory = cellViewFactory;
             _mapDataModel = mapDataModel;
+            _mapDataModel.SetDrawer(this);
         }
 
         public void Draw()
@@ -32,6 +33,11 @@ namespace Map
             {
                 DrawCell(cell.CellPosition);
             }
+        }
+
+        public CellView GetCellView(CellPosition cellPosition)
+        {
+            return _drawnCells[cellPosition];
         }
 
         private void DrawCell(CellPosition cellPosition)

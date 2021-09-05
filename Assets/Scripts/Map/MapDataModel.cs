@@ -13,6 +13,8 @@ namespace Map
 	{
 		private readonly MapConfig _mapConfig;
 		public List<List<Cell>> Grid { get; private set; }
+		
+		private MapDrawer _mapDrawer;
 
 		public MapDataModel(MapConfig mapConfig)
 		{
@@ -61,13 +63,14 @@ namespace Map
 				foreach (var cell in row)
 				{
 					cell.OccupiedTetriminoView.Clear();
-					cell.OccupiedTetriminoView = null;
+					cell.SetPartView(null);
 				}
 			}
 		}
 
 		public void MovePartsToNewPositions(IEnumerable<CellMoveData> moveTransformation)
 		{
+			var grid = Grid;
 			var cellsToMove = new List<(TetriminoPartView, Cell)>();
 			var cellsToClear = new List<Cell>();
 			foreach (var (oldPosition, newPosition) in moveTransformation.Select(c => c.PositionTransformation))
@@ -79,9 +82,9 @@ namespace Map
 
 			foreach (var cell in cellsToClear)
 			{
-				cell.OccupiedTetriminoView = null;
+				cell.SetPartView(null);
 			}
-
+			
 			foreach (var (tetriminoPartView, cellToMoveInto) in cellsToMove)
 			{
 				cellToMoveInto.SetPartView(tetriminoPartView);
@@ -90,7 +93,7 @@ namespace Map
 
 		public void SetTetriminoPartViewToCell(CellPosition cellPosition, TetriminoPartView tetriminoPartView)
 		{
-			FindCellByPosition(cellPosition).OccupiedTetriminoView = tetriminoPartView;
+			FindCellByPosition(cellPosition).SetPartView(tetriminoPartView);
 		}
 
 		private Cell FindCellByPosition(CellPosition cellPosition)
@@ -110,7 +113,7 @@ namespace Map
 				{
 					var cellPosition = new CellPosition(columnIndex, rowIndex);
 
-					row.Add(new Cell(cellPosition));
+					row.Add(new Cell(cellPosition, _mapDrawer));
 				}
 
 				Grid.Add(row);
@@ -139,6 +142,11 @@ namespace Map
 
 			cell1.SetPartView(secondCellOccupiedTetriminoView);
 			cell2.SetPartView(firstCellOccupiedTetriminoView);
+		}
+
+		public void SetDrawer(MapDrawer mapDrawer)
+		{
+			_mapDrawer = mapDrawer;
 		}
 	}
 }

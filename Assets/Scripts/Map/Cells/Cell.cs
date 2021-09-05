@@ -1,12 +1,14 @@
 using System.Diagnostics;
 using Data;
 using Tetrimino;
+using Zenject;
 
 namespace Map.Cells
 {
 	[DebuggerDisplay("IsFilled = {IsFilled}")]
 	public class Cell
 	{
+		private readonly MapDrawer _mapDrawer;
 		public CellPosition CellPosition { get; }
 
 		public CellOccupancy CellOccupancy =>
@@ -14,10 +16,12 @@ namespace Map.Cells
 
 		private string IsFilled => CellOccupancy == CellOccupancy.Filled? "Filled":"Empty";
 
-		public TetriminoPartView OccupiedTetriminoView { get; set; }
+		public TetriminoPartView OccupiedTetriminoView { get; private set; }
+		
 
-		public Cell(CellPosition cellPosition)
+		public Cell(CellPosition cellPosition, MapDrawer mapDrawer)
 		{
+			_mapDrawer = mapDrawer;
 			CellPosition = cellPosition;
 		}
 
@@ -25,10 +29,13 @@ namespace Map.Cells
 		{
 			OccupiedTetriminoView = tetriminoPartView;
 
-			if (tetriminoPartView != null)
+			var isPartNotNull = tetriminoPartView != null;
+			if (isPartNotNull)
 			{
 				tetriminoPartView.MoveToNewPosition(CellPosition);
 			}
+
+			_mapDrawer.GetCellView(CellPosition).SetPartDebugActive(isPartNotNull);
 		}
 	}
 }
