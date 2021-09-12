@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Data;
+using Extensions;
+using Map.Cells;
 
 namespace Tetrimino.Data
 {
@@ -10,7 +12,9 @@ namespace Tetrimino.Data
 			new Dictionary<CellPosition, TetriminoPartView>();
 
 		public IEnumerable<CellPosition> PartsPositions => Parts.Keys;
-		public IEnumerable<TetriminoPartView> PartsViews => Parts.Values;
+
+		public IEnumerable<CellPosition> CurrentPartsPosition(TetriminoRotation currentTetriminoRotation) =>
+			PartsPositions.RotateWithMatrix(currentTetriminoRotation).Select(k => k.PositionTransformation.NewPosition);
 
 		public TetriminoPartsHolder(IEnumerable<CellPosition> partsPositions)
 		{

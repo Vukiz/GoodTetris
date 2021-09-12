@@ -26,27 +26,23 @@ namespace Tetrimino
 
 		public IEnumerable<CellMoveData> PartsTransformationRelativeTo(CellPosition relativeCellPosition)
 		{
-			return AllPartsInWorldCoords(relativeCellPosition, TetriminoRotation);
+			var rotatedParts = PartsHolder.PartsPositions.RotateWithMatrix(TetriminoRotation);
+
+			return (from rotatedPart in rotatedParts
+				let oldPosition = TetriminoPosition + rotatedPart.PositionTransformation.NewPosition
+				let newPosition = relativeCellPosition + rotatedPart.PositionTransformation.NewPosition
+				select new CellMoveData(oldPosition, newPosition)).ToList();
 		}
 
-		public IEnumerable<CellMoveData> PartsPositionsInWorldCoordsWithRotation(TetriminoRotation newTetriminoRotation)
+		public IEnumerable<CellMoveData> PartsPositionsInWorldCoordsWithRotation(RotateDirection rotateDirection)
 		{
-			return AllPartsInWorldCoords(TetriminoPosition, newTetriminoRotation);
-		}
+			var rotatedParts = PartsHolder.PartsPositions.RotateWithMatrix(TetriminoRotation)
+				.Select(p => p.PositionTransformation.NewPosition).RotateWithMatrix(rotateDirection);
 
-		private IEnumerable<CellMoveData> AllPartsInWorldCoords(CellPosition relativeCellPosition,
-			TetriminoRotation newTetriminoRotation)
-		{
-			var rotatedParts = PartsHolder.RotateWithMatrix(newTetriminoRotation);
-			var cellPositions = new List<CellMoveData>();
-			foreach (var rotatedPart in rotatedParts)
-			{
-				var oldPosition = TetriminoPosition + rotatedPart.PositionTransformation.OldPosition;
-				var newPosition = relativeCellPosition + rotatedPart.PositionTransformation.NewPosition;
-				cellPositions.Add(new CellMoveData(oldPosition, newPosition));
-			}
-
-			return cellPositions;
+			return (from rotatedPart in rotatedParts
+				let oldPosition = TetriminoPosition + rotatedPart.PositionTransformation.OldPosition
+				let newPosition = TetriminoPosition + rotatedPart.PositionTransformation.NewPosition
+				select new CellMoveData(oldPosition, newPosition)).ToList();
 		}
 	}
 }

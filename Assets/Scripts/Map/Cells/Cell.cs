@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using Data;
 using Tetrimino;
-using Zenject;
 
 namespace Map.Cells
 {
@@ -15,6 +14,11 @@ namespace Map.Cells
 			OccupiedTetriminoView == null ? CellOccupancy.Empty : CellOccupancy.Filled;
 
 		private string IsFilled => CellOccupancy == CellOccupancy.Filled? "Filled":"Empty";
+
+		public override string ToString()
+		{
+			return $"Cell: {CellPosition.X}|{CellPosition.Y} ";
+		}
 
 		public TetriminoPartView OccupiedTetriminoView { get; private set; }
 		

@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Config;
 using Data;
 using Extensions;
 using Map.Cells;
 using Tetrimino;
+using UnityEngine;
 using Zenject;
 
 namespace Map
@@ -70,7 +72,6 @@ namespace Map
 
 		public void MovePartsToNewPositions(IEnumerable<CellMoveData> moveTransformation)
 		{
-			var grid = Grid;
 			var cellsToMove = new List<(TetriminoPartView, Cell)>();
 			var cellsToClear = new List<Cell>();
 			foreach (var (oldPosition, newPosition) in moveTransformation.Select(c => c.PositionTransformation))
@@ -84,11 +85,18 @@ namespace Map
 			{
 				cell.SetPartView(null);
 			}
+
+			var clearedCells = cellsToClear.Aggregate("", (s, cell) => cell + s + " ");
+			Debug.Log($"Cleared : {clearedCells}");
 			
 			foreach (var (tetriminoPartView, cellToMoveInto) in cellsToMove)
 			{
 				cellToMoveInto.SetPartView(tetriminoPartView);
 			}
+			
+			var setCells = cellsToMove.Aggregate("", (s, cell) => cell.Item2 + s + " ");
+			
+			Debug.Log($"Set : {setCells}");
 		}
 
 		public void SetTetriminoPartViewToCell(CellPosition cellPosition, TetriminoPartView tetriminoPartView)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Config;
@@ -8,6 +9,7 @@ using Map;
 using Map.Cells;
 using Tetrimino;
 using TetriminoMoving.Data;
+using UnityEngine;
 
 namespace TetriminoMoving
 {
@@ -61,14 +63,17 @@ namespace TetriminoMoving
 			}
 
 			var newTetriminoRotation = currentTetrimino.Model.NextRotation(rotateDirection);
-			var newParts = currentTetrimino.Model.PartsPositionsInWorldCoordsWithRotation(newTetriminoRotation)
+			var newParts = currentTetrimino.Model.PartsPositionsInWorldCoordsWithRotation(rotateDirection)
 				.ToList();
 
 			if (!IsTetriminoRotateConfigValid(newParts))
 			{
+				Debug.Log($"Rotate failed");
 				return;
 			}
 			
+			Debug.Log($"Rotate success");
+
 			UpdateMapCells(newParts);
 			currentTetrimino.SetNewTetriminoRotation(newTetriminoRotation);
 		}
@@ -85,11 +90,13 @@ namespace TetriminoMoving
 			var isTetriminoInBounds = IsTetriminoInBounds(newPartsTransformations);
 			if (!isTetriminoInBounds)
 			{
-				if (IsAnyPartBelowTheFloor(newPartsTransformations))
+				if (!IsAnyPartBelowTheFloor(newPartsTransformations))
 				{
-					tetriminoDown = true;
-					TetriminoDown();
+					return;
 				}
+
+				tetriminoDown = true;
+				TetriminoDown();
 
 				return;
 			}
@@ -99,6 +106,7 @@ namespace TetriminoMoving
 			{
 				tetriminoDown = true;
 				TetriminoDown();
+				
 				return;
 			}
 
@@ -139,22 +147,19 @@ namespace TetriminoMoving
 			var allOldCellPositions = partsTransformation.Select(p => p.PositionTransformation.OldPosition);
 			var allNewCellPositions = partsTransformation.Select(p => p.PositionTransformation.NewPosition);
 			var onlyNewPositions = allNewCellPositions.Except(allOldCellPositions);
-			var isMapSpaceEmpty = true;
-			foreach (var p in onlyNewPositions)
-			{
-				if (IsCellFilled(p))
-				{
-					isMapSpaceEmpty = false;
-					break;
-				}
-			}
 
-			return isMapSpaceEmpty;
+			return onlyNewPositions.All(p => !IsCellFilled(p));
 		}
 
 		private bool IsCellFilled(CellPosition cellPosition)
 		{
-			return _mapDataModel.IsCellFilled(cellPosition);
+			var isCellFilled = _mapDataModel.IsCellFilled(cellPosition);
+			if (isCellFilled)
+			{
+				Debug.Log($"{cellPosition.X}|{cellPosition.Y} is filled cannot move part here");
+			}
+
+			return isCellFilled;
 		}
 	}
 }
