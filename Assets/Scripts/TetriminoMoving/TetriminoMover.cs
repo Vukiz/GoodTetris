@@ -68,12 +68,9 @@ namespace TetriminoMoving
 
 			if (!IsTetriminoRotateConfigValid(newParts))
 			{
-				Debug.Log($"Rotate failed");
 				return;
 			}
 			
-			Debug.Log($"Rotate success");
-
 			UpdateMapCells(newParts);
 			currentTetrimino.SetNewTetriminoRotation(newTetriminoRotation);
 		}
@@ -154,10 +151,10 @@ namespace TetriminoMoving
 		private bool IsCellFilled(CellPosition cellPosition)
 		{
 			var isCellFilled = _mapDataModel.IsCellFilled(cellPosition);
-			if (isCellFilled)
-			{
-				Debug.Log($"{cellPosition.X}|{cellPosition.Y} is filled cannot move part here");
-			}
+			//if (isCellFilled)
+			//{
+			//	Debug.Log($"{cellPosition.X}|{cellPosition.Y} is filled cannot move part here");
+			//}
 
 			return isCellFilled;
 		}

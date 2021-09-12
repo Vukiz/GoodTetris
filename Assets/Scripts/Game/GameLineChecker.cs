@@ -4,6 +4,7 @@ using System.Linq;
 using CurrentTetriminoManager;
 using Extensions;
 using Map;
+using UnityEngine;
 using Zenject;
 
 namespace Game
@@ -12,6 +13,8 @@ namespace Game
 	{
 		private readonly MapDataModel _mapDataModel;
 		private readonly TetriminoManager _tetriminoManager;
+
+		public event Action LinesChecked;
 
 		public GameLineChecker(MapDataModel mapDataModel, TetriminoManager tetriminoManager)
 		{
@@ -50,6 +53,8 @@ namespace Game
 				_mapDataModel.ClearFilledLines(filledRows);
 				_mapDataModel.CollapseEmptyLines();
 			}
+			
+			LinesChecked?.Invoke();
 		}
 	}
 }

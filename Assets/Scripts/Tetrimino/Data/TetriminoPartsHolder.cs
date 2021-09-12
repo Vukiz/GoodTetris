@@ -32,7 +32,7 @@ namespace Tetrimino.Data
 		public void RemovePart(TetriminoPartView partView)
 		{
 			var neededParts = Parts.Where(kvp => kvp.Value == partView);
-			foreach (var kvp in neededParts)
+			foreach (var kvp in neededParts.ToList())
 			{
 				Parts.Remove(kvp.Key);
 			}

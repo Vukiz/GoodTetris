@@ -24,7 +24,7 @@ namespace Starter.Installers
             TetriminoInstaller.Install(Container);
             LevelInstaller.Install(Container);
             Container.BindInterfacesTo<GameStarter>().AsSingle();
-            Container.BindInterfacesTo<GameLineChecker>().AsSingle();
+            Container.BindInterfacesAndSelfTo<GameLineChecker>().AsSingle();
         }
 
         private void InstallPlayer()

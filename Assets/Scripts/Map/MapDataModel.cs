@@ -15,7 +15,7 @@ namespace Map
 	{
 		private readonly MapConfig _mapConfig;
 		public List<List<Cell>> Grid { get; private set; }
-		
+
 		private MapDrawer _mapDrawer;
 
 		public MapDataModel(MapConfig mapConfig)
@@ -31,7 +31,7 @@ namespace Map
 		public bool IsCellFilled(CellPosition cellPosition)
 		{
 			var cell = FindCellByPosition(cellPosition);
-			return cell.CellOccupancy == CellOccupancy.Filled;
+			return cell == null || cell.CellOccupancy == CellOccupancy.Filled;
 		}
 
 		public void CollapseEmptyLines()
@@ -42,6 +42,11 @@ namespace Map
 				var row = Grid[rowIndex];
 				if (row.IsRowEmpty())
 				{
+					if (emptyRowIndex != -1)
+					{
+						continue;
+					}
+
 					emptyRowIndex = rowIndex;
 				}
 				else
@@ -53,6 +58,7 @@ namespace Map
 
 					MoveAllUpperRowsDown(emptyRowIndex, rowIndex);
 					rowIndex = emptyRowIndex;
+					emptyRowIndex = -1;
 				}
 			}
 		}
@@ -86,17 +92,16 @@ namespace Map
 				cell.SetPartView(null);
 			}
 
-			var clearedCells = cellsToClear.Aggregate("", (s, cell) => cell + s + " ");
-			Debug.Log($"Cleared : {clearedCells}");
-			
+			//var clearedCells = cellsToClear.Aggregate("", (s, cell) => cell + s + " ");
+			//Debug.Log($"Cleared : {clearedCells}");
+
 			foreach (var (tetriminoPartView, cellToMoveInto) in cellsToMove)
 			{
 				cellToMoveInto.SetPartView(tetriminoPartView);
 			}
-			
-			var setCells = cellsToMove.Aggregate("", (s, cell) => cell.Item2 + s + " ");
-			
-			Debug.Log($"Set : {setCells}");
+
+			//var setCells = cellsToMove.Aggregate("", (s, cell) => cell.Item2 + s + " ");
+			//Debug.Log($"Set : {setCells}");
 		}
 
 		public void SetTetriminoPartViewToCell(CellPosition cellPosition, TetriminoPartView tetriminoPartView)
@@ -133,12 +138,17 @@ namespace Map
 			var emptyRowsCount = filledRowIndex - firstEmptyRowIndex;
 			for (var rowIndex = filledRowIndex; rowIndex < Grid.Count - 1; rowIndex++)
 			{
-				var filledRow = Grid[filledRowIndex];
+				var upperRow = Grid[rowIndex];
 				var lowerRow = Grid[rowIndex - emptyRowsCount];
 
-				for (var cellIndex = 0; cellIndex < filledRow.Count; cellIndex++)
+				if (upperRow.IsRowEmpty())
 				{
-					SwapCells(lowerRow[cellIndex], filledRow[cellIndex]);
+					break;
+				}
+
+				for (var cellIndex = 0; cellIndex < upperRow.Count; cellIndex++)
+				{
+					SwapCells(lowerRow[cellIndex], upperRow[cellIndex]);
 				}
 			}
 		}
