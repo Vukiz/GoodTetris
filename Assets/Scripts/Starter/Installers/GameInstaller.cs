@@ -1,4 +1,5 @@
 using Config;
+using DropPositionHighlighting;
 using Game;
 using Map;
 using Map.Cells;
@@ -25,6 +26,7 @@ namespace Starter.Installers
             LevelInstaller.Install(Container);
             Container.BindInterfacesTo<GameStarter>().AsSingle();
             Container.BindInterfacesAndSelfTo<GameLineChecker>().AsSingle();
+            Container.BindInterfacesTo<DropPositionHighlighter>().AsSingle();
         }
 
         private void InstallPlayer()
@@ -40,6 +42,9 @@ namespace Starter.Installers
             Container.BindInterfacesAndSelfTo<MapDrawer>().AsTransient();
             Container.BindFactory<CellView, CellView.Factory>()
                 .FromComponentInNewPrefab(_prefabsConfig.CellPrefab)
+                .UnderTransformGroup("Grid");
+            Container.BindFactory<DropCellView, DropCellView.Factory>()
+                .FromComponentInNewPrefab(_prefabsConfig.DropCellPrefab)
                 .UnderTransformGroup("Grid");
         }
 

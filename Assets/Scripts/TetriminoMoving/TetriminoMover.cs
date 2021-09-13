@@ -9,7 +9,6 @@ using Map;
 using Map.Cells;
 using Tetrimino;
 using TetriminoMoving.Data;
-using UnityEngine;
 
 namespace TetriminoMoving
 {
@@ -18,6 +17,8 @@ namespace TetriminoMoving
 		private readonly MapDataModel _mapDataModel;
 		private readonly TetriminoManager _currentTetriminoManager;
 		private readonly MapConfig _mapConfig;
+
+		public event Action TetriminoMoved;
 
 		public TetriminoMover(MapDataModel mapDataModel,
 			TetriminoManager currentTetriminoManager,
@@ -50,9 +51,9 @@ namespace TetriminoMoving
 			var tetrimino = _currentTetriminoManager.CurrentTetrimino;
 			var tetriminoPosition = tetrimino.Model.TetriminoPosition;
 			var dropPosition = GetDropPosition(tetrimino, ref tetriminoPosition);
+			tetrimino.SetNewTetriminoPosition(tetriminoPosition);
 
 			UpdateMapCells(dropPosition);
-			tetrimino.SetNewTetriminoPosition(tetriminoPosition);
 			TetriminoDown();
 		}
 
@@ -72,9 +73,26 @@ namespace TetriminoMoving
 			{
 				return;
 			}
+			
+			currentTetrimino.SetNewTetriminoRotation(newTetriminoRotation);
 
 			UpdateMapCells(newParts);
-			currentTetrimino.SetNewTetriminoRotation(newTetriminoRotation);
+		}
+		
+		public IEnumerable<CellMoveData> GetDropPosition(TetriminoHolder tetriminoHolder,
+			ref CellPosition relativePoint)
+		{
+			var newCellPosition = relativePoint;
+			List<CellMoveData> newPartsTransformations;
+			CellPosition lastValidPos;
+			do
+			{
+				lastValidPos = newCellPosition;
+				newCellPosition = newCellPosition.Move(MoveDirection.Down);
+				newPartsTransformations = tetriminoHolder.Model.PartsTransformationRelativeTo(newCellPosition).ToList();
+			} while (IsTetriminoInBounds(newPartsTransformations) && IsMapSpaceEmpty(newPartsTransformations));
+
+			return tetriminoHolder.Model.PartsTransformationRelativeTo(lastValidPos).ToList();
 		}
 
 		private void MoveTetrimino(MoveDirection moveDirection, TetriminoHolder tetriminoHolder)
@@ -101,25 +119,9 @@ namespace TetriminoMoving
 				TetriminoDown();
 				return;
 			}
+			tetriminoHolder.SetNewTetriminoPosition(newCellPosition);
 
 			UpdateMapCells(newPartsTransformations);
-			tetriminoHolder.SetNewTetriminoPosition(newCellPosition);
-		}
-
-		private IEnumerable<CellMoveData> GetDropPosition(TetriminoHolder tetriminoHolder,
-			ref CellPosition relativePoint)
-		{
-			var newCellPosition = relativePoint;
-			List<CellMoveData> newPartsTransformations;
-			CellPosition lastValidPos;
-			do
-			{
-				lastValidPos = newCellPosition;
-				newCellPosition = newCellPosition.Move(MoveDirection.Down);
-				newPartsTransformations = tetriminoHolder.Model.PartsTransformationRelativeTo(newCellPosition).ToList();
-			} while (IsTetriminoInBounds(newPartsTransformations) && IsMapSpaceEmpty(newPartsTransformations));
-
-			return tetriminoHolder.Model.PartsTransformationRelativeTo(lastValidPos).ToList();
 		}
 
 		private bool IsTetriminoInBounds(IEnumerable<CellMoveData> newParts)
@@ -135,6 +137,7 @@ namespace TetriminoMoving
 		private void UpdateMapCells(IEnumerable<CellMoveData> newPartsPositions)
 		{
 			_mapDataModel.MovePartsToNewPositions(newPartsPositions);
+			TetriminoMoved?.Invoke();
 		}
 
 		private bool IsTetriminoRotateConfigValid(IReadOnlyCollection<CellMoveData> newParts)

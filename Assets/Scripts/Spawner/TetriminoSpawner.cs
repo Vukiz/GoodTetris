@@ -1,3 +1,4 @@
+using System;
 using Config;
 using CurrentTetriminoManager;
 using Data;
@@ -15,6 +16,8 @@ namespace Spawner
 		private readonly MapConfig _mapConfig;
 		private readonly ITetriminoesProvider _tetriminoesProvider;
 		private readonly ITetriminoFactory _tetriminoFactory;
+
+		public event Action TetriminoSpawned;
 
 		public TetriminoSpawner(GameLineChecker gameLineChecker,
 			MapConfig mapConfig,
@@ -40,6 +43,7 @@ namespace Spawner
 			var newTetriminoPosition = GetTetriminoPosition();
 			var tetrimino = _tetriminoFactory.CreateTetrimino(tetriminoPiece, newTetriminoPosition);
 			_tetriminoManager.CurrentTetrimino = tetrimino;
+			TetriminoSpawned?.Invoke();
 		}
 
 		private CellPosition GetTetriminoPosition()

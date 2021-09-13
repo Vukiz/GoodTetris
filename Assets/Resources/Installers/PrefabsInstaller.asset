@@ -15,6 +15,8 @@ MonoBehaviour:
   _prefabsConfig:
     CellPrefab: {fileID: 5734694384670265534, guid: e1ef13d520df14671ab042b4a5bbd034,
       type: 3}
+    DropCellPrefab: {fileID: -6441446043982021161, guid: ec8dd7d03d2b5472c8e94398f10b5e7f,
+      type: 3}
     TetriminoView: {fileID: 2664020422198113039, guid: b905152dc89064fe39b0599a422b4619,
       type: 3}
     TetriminoPart: {fileID: 4684504830255053277, guid: 06d082e2c3c5046dc87294ad1b92501e,
