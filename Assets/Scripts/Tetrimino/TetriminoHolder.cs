@@ -1,4 +1,3 @@
-using Config;
 using Data;
 using Tetrimino.Data;
 
@@ -9,9 +8,8 @@ namespace Tetrimino
 		public TetriminoView View { get; set; }
 		public TetriminoDataModel Model { get; set; }
 
-		public void SetNewTetriminoPosition(CellPosition newCellPosition, MapConfig mapConfig)
+		public void SetNewTetriminoPosition(CellPosition newCellPosition)
 		{
-			//View.transform.position = newCellPosition.GetCellWorldPosition(mapConfig);
 			Model.TetriminoPosition = newCellPosition;
 		}
 
