@@ -22,7 +22,7 @@ namespace TetriminoMoving
 
         private void OnGameTicked()
         {
-            _tetriminoMover.MoveTetriminoInDirection(MoveDirection.Down);
+            _tetriminoMover.MoveTetriminoInDirection(MoveDirection.Down, true);
         }
     }
 }

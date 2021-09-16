@@ -13,25 +13,28 @@ namespace Extensions
 		public static IEnumerable<CellMoveData> RotateWithMatrix(this IEnumerable<CellPosition> oldCellPositions,
 			RotateDirection rotateDirection)
 		{
-			int sinus;
-			int cosinus;
-			switch (rotateDirection)
+			var sinus = rotateDirection switch
 			{
-				case RotateDirection.Clockwise:
-					sinus = 1;
-					cosinus = 0;
-					break;
-				case RotateDirection.Counterclockwise:
-					sinus = -1;
-					cosinus = 0;
-					break;
-				default:
-					throw new ArgumentOutOfRangeException(nameof(rotateDirection), rotateDirection, null);
+				RotateDirection.Clockwise => 1,
+				RotateDirection.Counterclockwise => -1,
+				_ => throw new ArgumentOutOfRangeException(nameof(rotateDirection), rotateDirection, null)
+			};
+
+			var list = new List<CellMoveData>();
+			foreach (var kvp in oldCellPositions)
+			{
+				var rotatedCellPosition = GetRotatedCellPosition(kvp, sinus);
+				list.Add(new CellMoveData(kvp, rotatedCellPosition));
 			}
 
-			return (from kvp in oldCellPositions
-				let rotatedCellPosition = GetRotatedCellPosition(kvp, sinus, cosinus)
-				select new CellMoveData(kvp, rotatedCellPosition)).ToList();
+			return list;
+		}
+
+		private static CellPosition GetRotatedCellPosition(CellPosition cellPosition, int sinus)
+		{
+			var x = -cellPosition.Y * sinus;
+			var y = cellPosition.X * sinus;
+			return new CellPosition(x, y);
 		}
 
 		public static IEnumerable<CellMoveData> RotateWithMatrix(

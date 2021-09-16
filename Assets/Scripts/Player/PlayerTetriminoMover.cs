@@ -51,7 +51,7 @@ namespace Player
 
 		private void MoveTetrimino(ActionType playerAction)
 		{
-			_tetriminoMover.MoveTetriminoInDirection(playerAction.TransformInputToDirection());
+			_tetriminoMover.MoveTetriminoInDirection(playerAction.TransformInputToDirection(), false);
 		}
 
 		public void Dispose()

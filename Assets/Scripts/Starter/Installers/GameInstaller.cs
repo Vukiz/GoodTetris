@@ -18,7 +18,7 @@ namespace Starter.Installers
         public override void InstallBindings()
         {
             Container.BindInterfacesAndSelfTo<GameTicker>().AsSingle();
-            Container.Bind<ITetriminoesProvider>().To<SpecificTetriminoProvider>().AsTransient();
+            Container.Bind<ITetriminoesProvider>().To<BagRandomizer>().AsTransient();
             InstallMap();
             InstallTetriminoes();
             InstallPlayer();

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CurrentTetriminoManager;
+using Extensions;
 using Map.Cells;
 using Spawner;
 using TetriminoMoving;
@@ -62,7 +63,8 @@ namespace DropPositionHighlighting
 		{
 			var tetrimino = _tetriminoManager.CurrentTetrimino;
 			var tetriminoWorldPosition = tetrimino.Model.TetriminoPosition;
-			var dropPosition = _tetriminoMover.GetDropPosition(tetrimino, ref tetriminoWorldPosition);
+			var dropPosition = _tetriminoMover.GetDropPosition(tetrimino, ref tetriminoWorldPosition).ToList();
+			
 			DrawDropPhantom(dropPosition.ToList());
 		}
 
