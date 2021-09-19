@@ -16,8 +16,6 @@ namespace Map
 		private readonly MapConfig _mapConfig;
 		public List<List<Cell>> Grid { get; private set; }
 
-		private MapDrawer _mapDrawer;
-
 		public MapDataModel(MapConfig mapConfig)
 		{
 			_mapConfig = mapConfig;
@@ -92,16 +90,16 @@ namespace Map
 				cell.SetPartView(null);
 			}
 
-			//var clearedCells = cellsToClear.Aggregate("", (s, cell) => cell + s + " ");
-			//Debug.Log($"Cleared : {clearedCells}");
+			var clearedCells = cellsToClear.Aggregate("", (s, cell) => cell + s + " ");
+			Debug.Log($"Cleared : {clearedCells}");
 
 			foreach (var (tetriminoPartView, cellToMoveInto) in cellsToMove)
 			{
 				cellToMoveInto.SetPartView(tetriminoPartView);
 			}
 
-			//var setCells = cellsToMove.Aggregate("", (s, cell) => cell.Item2 + s + " ");
-			//Debug.Log($"Set : {setCells}");
+			var setCells = cellsToMove.Aggregate("", (s, cell) => cell.Item2 + s + " ");
+			Debug.Log($"Set : {setCells}");
 		}
 
 		public void SetTetriminoPartViewToCell(CellPosition cellPosition, TetriminoPartView tetriminoPartView)
@@ -126,17 +124,28 @@ namespace Map
 				{
 					var cellPosition = new CellPosition(columnIndex, rowIndex);
 
-					row.Add(new Cell(cellPosition, _mapDrawer));
+					row.Add(CreateCell(cellPosition));
 				}
 
 				Grid.Add(row);
 			}
 		}
 
+		private Cell CreateCell(CellPosition cellPosition)
+		{
+		#if UNITY_EDITOR
+			return new Cell(cellPosition, _mapDrawer);
+		#else
+			return new Cell(cellPosition);
+		#endif
+		}
+
 		private void MoveAllUpperRowsDown(int firstEmptyRowIndex, int filledRowIndex)
 		{
 			var emptyRowsCount = filledRowIndex - firstEmptyRowIndex;
-			for (var rowIndex = filledRowIndex; rowIndex < Grid.Count - 1; rowIndex++)
+			for (var rowIndex = filledRowIndex;
+				rowIndex < Grid.Count - 1;
+				rowIndex++)
 			{
 				var upperRow = Grid[rowIndex];
 				var lowerRow = Grid[rowIndex - emptyRowsCount];
@@ -157,14 +166,16 @@ namespace Map
 		{
 			var firstCellOccupiedTetriminoView = cell1.OccupiedTetriminoView;
 			var secondCellOccupiedTetriminoView = cell2.OccupiedTetriminoView;
-
 			cell1.SetPartView(secondCellOccupiedTetriminoView);
 			cell2.SetPartView(firstCellOccupiedTetriminoView);
 		}
+	#if UNITY_EDITOR
+		private MapDrawer _mapDrawer;
 
 		public void SetDrawer(MapDrawer mapDrawer)
 		{
 			_mapDrawer = mapDrawer;
 		}
+	#endif
 	}
 }

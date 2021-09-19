@@ -55,8 +55,13 @@ namespace DropPositionHighlighting
 			_tetriminoSpawner.TetriminoSpawned -= OnTetriminoMoved;
 			foreach (var dropCellView in _drawnCells)
 			{
-				Object.Destroy(dropCellView.gameObject);
+				if (dropCellView != null)
+				{
+					Object.Destroy(dropCellView.gameObject);
+				}
 			}
+
+			_drawnCells.Clear();
 		}
 
 		private void OnTetriminoMoved()

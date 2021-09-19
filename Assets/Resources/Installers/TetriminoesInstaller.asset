@@ -22,6 +22,9 @@ MonoBehaviour:
         Y: 0
       - X: 1
         Y: 1
+      RotationPoint:
+        X: 0.5
+        Y: 0.5
     - TetriminoType: 1
       TetriminoParts:
       - X: -1
@@ -30,6 +33,9 @@ MonoBehaviour:
         Y: 0
       - X: 2
         Y: 0
+      RotationPoint:
+        X: 0.5
+        Y: -0.5
     - TetriminoType: 2
       TetriminoParts:
       - X: 0
@@ -37,6 +43,9 @@ MonoBehaviour:
       - X: -1
         Y: 0
       - X: 1
+        Y: 0
+      RotationPoint:
+        X: 0
         Y: 0
     - TetriminoType: 3
       TetriminoParts:
@@ -46,6 +55,9 @@ MonoBehaviour:
         Y: 0
       - X: 1
         Y: 1
+      RotationPoint:
+        X: 0
+        Y: 0
     - TetriminoType: 4
       TetriminoParts:
       - X: 0
@@ -53,6 +65,9 @@ MonoBehaviour:
       - X: -1
         Y: 1
       - X: 1
+        Y: 0
+      RotationPoint:
+        X: 0
         Y: 0
     - TetriminoType: 5
       TetriminoParts:
@@ -62,6 +77,9 @@ MonoBehaviour:
         Y: 0
       - X: 1
         Y: 0
+      RotationPoint:
+        X: 0
+        Y: 0
     - TetriminoType: 6
       TetriminoParts:
       - X: 1
@@ -69,4 +87,7 @@ MonoBehaviour:
       - X: 1
         Y: 0
       - X: -1
+        Y: 0
+      RotationPoint:
+        X: 0
         Y: 0

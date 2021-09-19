@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Config;
 using Data;
@@ -26,18 +27,17 @@ namespace Tetrimino
 			_mapDataModel = mapDataModel;
 		}
 
-		public void Init(TetriminoDataModel tetriminoDataModel)
+		public void Init(TetriminoDataModel tetriminoDataModel, IEnumerable<CellPosition> parts)
 		{
 			_tetriminoDataModel = tetriminoDataModel;
-			CreateParts();
+			CreateParts(parts);
 		}
 
-		private void CreateParts()
+		private void CreateParts(IEnumerable<CellPosition> parts)
 		{
-			var parts = _tetriminoDataModel.PartsHolder.PartsPositions.ToList();
 			var cellSize = _mapConfig.CellSize;
 			transform.position = _tetriminoDataModel.TetriminoPosition.GetCellWorldPosition(_mapConfig);
-			CreatePart(_tetriminoDataModel.TetriminoCenter, cellSize);
+			CreatePart(TetriminoDataModel.TetriminoCenter, cellSize);
 			foreach (var partsPosition in parts)
 			{
 				CreatePart(partsPosition, cellSize);
@@ -48,12 +48,13 @@ namespace Tetrimino
 		{
 			var tetriminoPart = _tetriminoPartFactory.Create();
 			tetriminoPart.transform.SetParent(transform);
-			tetriminoPart.transform.localPosition = partPosition.GetCellWorldPosition(_mapConfig);
+			tetriminoPart.SetLocalPosition(partPosition);
 			tetriminoPart.SetSize(cellSize);
 			tetriminoPart.PartCleared += OnPartCleared;
 
-			_tetriminoDataModel.PartsHolder.SetPart(partPosition, tetriminoPart);
-			_mapDataModel.SetTetriminoPartViewToCell(partPosition + _tetriminoDataModel.TetriminoPosition, tetriminoPart);
+			_tetriminoDataModel.PartsHolder.AddPart(tetriminoPart);
+			_mapDataModel.SetTetriminoPartViewToCell(partPosition + _tetriminoDataModel.TetriminoPosition,
+				tetriminoPart);
 		}
 
 		private void OnPartCleared(TetriminoPartView tetriminoPartView)
@@ -73,7 +74,7 @@ namespace Tetrimino
 		private void ClearParts()
 		{
 			var parts = _tetriminoDataModel.PartsHolder;
-			foreach (var partView in parts.Parts.Values)
+			foreach (var partView in parts.Parts)
 			{
 				partView.PartCleared -= OnPartCleared;
 				Destroy(partView.gameObject);

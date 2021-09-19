@@ -9,7 +9,7 @@ namespace Game
 		public Action GameTicked;
 
 		private float _lastTimeTicked;
-		private float _timePerTick = 1f;
+		private float _timePerTick = 100f;
 
 		public void SetTimePerTick(float timePerTick)
 		{

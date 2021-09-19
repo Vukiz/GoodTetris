@@ -17,5 +17,6 @@ namespace Config
     {
         public TetriminoType TetriminoType;
         public List<CellPosition> TetriminoParts;
+        public TetriminoCalculationPoint RotationPoint;
     }
 }

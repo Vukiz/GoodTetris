@@ -7,13 +7,12 @@ namespace Map.Cells
 	[DebuggerDisplay("IsFilled = {IsFilled}")]
 	public class Cell
 	{
-		private readonly MapDrawer _mapDrawer;
 		public CellPosition CellPosition { get; }
 
 		public CellOccupancy CellOccupancy =>
 			OccupiedTetriminoView == null ? CellOccupancy.Empty : CellOccupancy.Filled;
 
-		private string IsFilled => CellOccupancy == CellOccupancy.Filled? "Filled":"Empty";
+		private string IsFilled => CellOccupancy == CellOccupancy.Filled ? "Filled" : "Empty";
 
 		public override string ToString()
 		{
@@ -21,22 +20,36 @@ namespace Map.Cells
 		}
 
 		public TetriminoPartView OccupiedTetriminoView { get; private set; }
-		
 
+	#if UNITY_EDITOR
+		private readonly MapDrawer _mapDrawer;
+		
 		public Cell(CellPosition cellPosition, MapDrawer mapDrawer)
 		{
 			_mapDrawer = mapDrawer;
 			CellPosition = cellPosition;
 		}
+	#else
+		public Cell(CellPosition cellPosition)
+		{
+			CellPosition = cellPosition;
+		}
+	#endif
 
 		public void SetPartView(TetriminoPartView tetriminoPartView)
 		{
 			OccupiedTetriminoView = tetriminoPartView;
 
 			var isPartNotNull = tetriminoPartView != null;
+
 			if (isPartNotNull)
 			{
-				tetriminoPartView.MoveToNewPosition(CellPosition);
+				tetriminoPartView.SetWorldPosition(CellPosition);
+			}
+
+		#if UNITY_EDITOR
+			if (isPartNotNull)
+			{
 				_mapDrawer.GetCellView(CellPosition).SetText(CellPosition);
 			}
 			else
@@ -45,6 +58,7 @@ namespace Map.Cells
 			}
 
 			_mapDrawer.GetCellView(CellPosition).SetPartDebugActive(isPartNotNull);
+		#endif
 		}
 	}
 }

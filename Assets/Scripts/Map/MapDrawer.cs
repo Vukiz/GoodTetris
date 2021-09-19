@@ -22,7 +22,9 @@ namespace Map
             _mapConfig = mapConfig;
             _cellViewFactory = cellViewFactory;
             _mapDataModel = mapDataModel;
+        #if UNITY_EDITOR
             _mapDataModel.SetDrawer(this);
+        #endif
         }
 
         public void Draw()

@@ -63,7 +63,6 @@ namespace TetriminoMoving
 				return;
 			}
 
-			var newTetriminoRotation = currentTetrimino.Model.NextRotation(rotateDirection);
 			var newParts = currentTetrimino.Model.PartsPositionsInWorldCoordsWithRotation(rotateDirection)
 				.ToList();
 
@@ -71,6 +70,8 @@ namespace TetriminoMoving
 			{
 				return;
 			}
+			
+			var newTetriminoRotation = currentTetrimino.Model.NextRotation(rotateDirection);
 
 			currentTetrimino.SetNewTetriminoRotation(newTetriminoRotation);
 

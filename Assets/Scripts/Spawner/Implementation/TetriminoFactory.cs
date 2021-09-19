@@ -22,14 +22,15 @@ namespace Spawner.Implementation
         public TetriminoHolder CreateTetrimino(TetriminoType tetriminoType, CellPosition newTetriminoPosition)
         {
             var view = _tetriminoFactory.Create();
-            var tetriminoDataModel = new TetriminoDataModel(CreatePartsForType(tetriminoType))
+            var tetriminoDataModel = new TetriminoDataModel
             {
                 TetriminoType = tetriminoType,
                 TetriminoRotation = TetriminoRotation.Up,
                 TetriminoPosition = newTetriminoPosition
             };
-            
-            view.Init(tetriminoDataModel);
+
+            tetriminoDataModel.RotationPoint = GetRotationPointFromConfig(tetriminoType);
+            view.Init(tetriminoDataModel, GetPartsPositionsFromConfig(tetriminoType));
             var result = new TetriminoHolder
             {
                 View = view,
@@ -39,12 +40,23 @@ namespace Spawner.Implementation
             return result;
         }
 
-        private TetriminoPartsHolder CreatePartsForType(TetriminoType tetriminoType)
+        private IEnumerable<CellPosition> GetPartsPositionsFromConfig(TetriminoType tetriminoType)
         {
             var tetriminoConfig = _tetriminoesConfig.Tetriminoes.FirstOrDefault(t => t.TetriminoType == tetriminoType);
             if (tetriminoConfig != null)
             {
-                return new TetriminoPartsHolder(tetriminoConfig.TetriminoParts);
+                return tetriminoConfig.TetriminoParts;
+            }
+
+            throw new KeyNotFoundException(
+                $"Couldn't find parts for {Enum.GetName(typeof(TetriminoType), tetriminoType)}");
+        }
+        private TetriminoCalculationPoint GetRotationPointFromConfig(TetriminoType tetriminoType)
+        {
+            var tetriminoConfig = _tetriminoesConfig.Tetriminoes.FirstOrDefault(t => t.TetriminoType == tetriminoType);
+            if (tetriminoConfig != null)
+            {
+                return tetriminoConfig.RotationPoint;
             }
 
             throw new KeyNotFoundException(
