@@ -21,7 +21,6 @@ namespace Tetrimino
 		public TetriminoRotation NextRotation(RotateDirection rotateDirection) =>
 			TetriminoRotation.Rotate(rotateDirection);
 
-
 		public IEnumerable<CellMoveData> PartsTransformationRelativeTo(CellPosition relativeCellPosition)
 		{
 			var partsWorldPositions = PartsHolder.PartsWorldPositions;

@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Config;
 using Data;
 using Spawner.Infrastructure;
@@ -11,6 +8,7 @@ namespace Spawner.Implementation
 {
     public class TetriminoFactory : ITetriminoFactory
     {
+        private const TetriminoRotation DefaultTetriminoRotation = TetriminoRotation.Up;
         private readonly TetriminoView.Factory _tetriminoFactory;
         private readonly TetriminoesConfig _tetriminoesConfig;
 
@@ -25,12 +23,12 @@ namespace Spawner.Implementation
             var tetriminoDataModel = new TetriminoDataModel
             {
                 TetriminoType = tetriminoType,
-                TetriminoRotation = TetriminoRotation.Up,
-                TetriminoPosition = newTetriminoPosition
+                TetriminoRotation = DefaultTetriminoRotation,
+                TetriminoPosition = newTetriminoPosition,
+                RotationPoint = _tetriminoesConfig.GetRotationPoint(tetriminoType)
             };
 
-            tetriminoDataModel.RotationPoint = GetRotationPointFromConfig(tetriminoType);
-            view.Init(tetriminoDataModel, GetPartsPositionsFromConfig(tetriminoType));
+            view.Init(tetriminoDataModel, _tetriminoesConfig.GetPartsPositions(tetriminoType));
             var result = new TetriminoHolder
             {
                 View = view,
@@ -38,29 +36,6 @@ namespace Spawner.Implementation
             };
             
             return result;
-        }
-
-        private IEnumerable<CellPosition> GetPartsPositionsFromConfig(TetriminoType tetriminoType)
-        {
-            var tetriminoConfig = _tetriminoesConfig.Tetriminoes.FirstOrDefault(t => t.TetriminoType == tetriminoType);
-            if (tetriminoConfig != null)
-            {
-                return tetriminoConfig.TetriminoParts;
-            }
-
-            throw new KeyNotFoundException(
-                $"Couldn't find parts for {Enum.GetName(typeof(TetriminoType), tetriminoType)}");
-        }
-        private TetriminoCalculationPoint GetRotationPointFromConfig(TetriminoType tetriminoType)
-        {
-            var tetriminoConfig = _tetriminoesConfig.Tetriminoes.FirstOrDefault(t => t.TetriminoType == tetriminoType);
-            if (tetriminoConfig != null)
-            {
-                return tetriminoConfig.RotationPoint;
-            }
-
-            throw new KeyNotFoundException(
-                $"Couldn't find parts for {Enum.GetName(typeof(TetriminoType), tetriminoType)}");
         }
     }
 }

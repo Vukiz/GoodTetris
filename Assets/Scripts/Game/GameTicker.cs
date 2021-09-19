@@ -9,7 +9,7 @@ namespace Game
 		public Action GameTicked;
 
 		private float _lastTimeTicked;
-		private float _timePerTick = 100f;
+		private float _timePerTick = 1f;
 
 		public void SetTimePerTick(float timePerTick)
 		{
@@ -23,14 +23,13 @@ namespace Game
 			if (time >= timeToTick)
 			{
 				GameTicked?.Invoke();
-				//Debug.Log("[GameTicker] GameTicked");
 				_lastTimeTicked = time;
 			}
 		}
 
 		public void ResetTickTime()
 		{
-			_lastTimeTicked = Time.time;
+			_lastTimeTicked = Time.time - _timePerTick / 2;
 		}
 	}
 }
