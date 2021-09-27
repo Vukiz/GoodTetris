@@ -54,9 +54,7 @@ namespace Starter.Installers
 		{
 			Container.Bind<BagRandomizer>().AsTransient();
 			Container.Bind<TetriminoQueueContainer>().AsSingle();
-			Container.BindFactory<TetriminoQueueView, TetriminoQueueView.Factory>()
-				.FromComponentInNewPrefab(_prefabsConfig.QueueViewPrefab)
-				.UnderTransformGroup("InGameUI");
+			Container.BindInterfacesTo<TetriminoQueueDrawer>().AsSingle();
 		}
 	}
 }

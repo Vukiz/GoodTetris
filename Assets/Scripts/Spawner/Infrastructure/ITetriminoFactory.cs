@@ -6,6 +6,6 @@ namespace Spawner.Infrastructure
 {
     public interface ITetriminoFactory
     {
-        TetriminoHolder CreateTetrimino(TetriminoType tetriminoType, CellPosition newTetriminoPosition);
+        TetriminoHolder CreateTetrimino(TetriminoType tetriminoType, CellPosition tetriminoPosition);
     }
 }

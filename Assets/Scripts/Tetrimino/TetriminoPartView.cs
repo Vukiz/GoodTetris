@@ -12,6 +12,7 @@ namespace Tetrimino
 		public Action<TetriminoPartView> PartCleared;
 		[SerializeField] private SpriteRenderer _spriteRenderer;
 		public CellPosition WorldCellPosition { get; private set; }
+		public CellPosition LocalCellPosition { get; private set; }
 
 		private MapConfig _mapConfig;
 
@@ -26,9 +27,10 @@ namespace Tetrimino
 			_spriteRenderer.size = new Vector2(newSize, newSize);
 		}
 
-		public void SetLocalPosition(CellPosition localPosition, MapConfig mapConfig = null)
+		public void SetLocalPosition(CellPosition newCellPosition)
 		{
-			transform.localPosition = new Vector3(localPosition.X, localPosition.Y, 0);
+			LocalCellPosition = newCellPosition;
+			transform.localPosition = new Vector3(newCellPosition.X, newCellPosition.Y, 0);
 		}
 
 		public void SetWorldPosition(CellPosition newCellPosition)

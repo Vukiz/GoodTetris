@@ -4,7 +4,7 @@ using System.Linq;
 using Config;
 using Data;
 using Extensions;
-using Map;
+using Spawner;
 using UnityEngine;
 using Zenject;
 
@@ -13,48 +13,45 @@ namespace Tetrimino
 	public class TetriminoView : MonoBehaviour, IDisposable
 	{
 		private TetriminoDataModel _tetriminoDataModel;
-		private TetriminoPartView.Factory _tetriminoPartFactory;
 
 		private MapConfig _mapConfig;
-		private MapDataModel _mapDataModel;
+		private TetriminoesConfig _tetriminoesConfig;
+		private TetriminoPartCreator _partCreator;
 
 		[Inject]
-		public void Construct(TetriminoPartView.Factory tetriminoPartFactory,
-			MapConfig mapConfig, MapDataModel mapDataModel)
+		public void Construct(
+			TetriminoesConfig tetriminoesConfig,
+			MapConfig mapConfig,
+			TetriminoPartCreator partCreator)
 		{
-			_tetriminoPartFactory = tetriminoPartFactory;
 			_mapConfig = mapConfig;
-			_mapDataModel = mapDataModel;
+			_tetriminoesConfig = tetriminoesConfig;
+			_partCreator = partCreator;
 		}
 
-		public void Init(TetriminoDataModel tetriminoDataModel, IEnumerable<CellPosition> parts)
+		public void Init(TetriminoDataModel tetriminoDataModel)
 		{
 			_tetriminoDataModel = tetriminoDataModel;
-			CreateParts(parts);
 		}
 
-		private void CreateParts(IEnumerable<CellPosition> parts)
+		public IEnumerable<TetriminoPartView> CreateParts()
 		{
+			var parts = _tetriminoesConfig.GetPartsPositions(_tetriminoDataModel.TetriminoType);
 			var cellSize = _mapConfig.CellSize;
 			transform.position = _tetriminoDataModel.TetriminoPosition.GetCellWorldPosition(_mapConfig);
-			CreatePart(TetriminoDataModel.TetriminoCenter, cellSize);
+			yield return CreatePart(TetriminoDataModel.TetriminoCenter, cellSize);
 			foreach (var partsPosition in parts)
 			{
-				CreatePart(partsPosition, cellSize);
+				yield return CreatePart(partsPosition, cellSize);
 			}
 		}
 
-		private void CreatePart(CellPosition partPosition, float cellSize)
+		private TetriminoPartView CreatePart(CellPosition partPosition, float cellSize)
 		{
-			var tetriminoPart = _tetriminoPartFactory.Create();
-			tetriminoPart.transform.SetParent(transform);
-			tetriminoPart.SetLocalPosition(partPosition);
-			tetriminoPart.SetSize(cellSize);
+			var tetriminoPart = _partCreator.CreatePart(transform, partPosition, cellSize);
 			tetriminoPart.PartCleared += OnPartCleared;
 
-			_tetriminoDataModel.PartsHolder.AddPart(tetriminoPart);
-			_mapDataModel.SetTetriminoPartViewToCell(partPosition + _tetriminoDataModel.TetriminoPosition,
-				tetriminoPart);
+			return tetriminoPart;
 		}
 
 		private void OnPartCleared(TetriminoPartView tetriminoPartView)

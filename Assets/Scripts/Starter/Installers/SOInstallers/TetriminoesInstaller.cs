@@ -2,7 +2,7 @@ using Config;
 using UnityEngine;
 using Zenject;
 
-namespace Starter.Installers
+namespace Starter.Installers.SOInstallers
 {
     [CreateAssetMenu(fileName = "TetriminoesInstaller", menuName = "Installers/TetriminoesInstaller")]
     public class TetriminoesInstaller : ScriptableObjectInstaller<TetriminoesInstaller>

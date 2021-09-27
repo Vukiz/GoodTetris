@@ -101,10 +101,13 @@ namespace Map
 			var setCells = cellsToMove.Aggregate("", (s, cell) => cell.Item2 + s + " ");
 			Debug.Log($"Set : {setCells}");
 		}
-
-		public void SetTetriminoPartViewToCell(CellPosition cellPosition, TetriminoPartView tetriminoPartView)
+		
+		public void SetTetriminoPartsToTheirInitialCells(IEnumerable<(CellPosition, TetriminoPartView)> tetriminoPartsCreationData)
 		{
-			FindCellByPosition(cellPosition).SetPartView(tetriminoPartView);
+			foreach (var (cellPosition, tetriminoPartView) in tetriminoPartsCreationData)
+			{
+				FindCellByPosition(cellPosition).SetPartView(tetriminoPartView);
+			}
 		}
 
 		private Cell FindCellByPosition(CellPosition cellPosition)
@@ -169,7 +172,7 @@ namespace Map
 			cell1.SetPartView(secondCellOccupiedTetriminoView);
 			cell2.SetPartView(firstCellOccupiedTetriminoView);
 		}
-	#if UNITY_EDITOR
+	#if UNITY_EDITOR 
 		private MapDrawer _mapDrawer;
 
 		public void SetDrawer(MapDrawer mapDrawer)

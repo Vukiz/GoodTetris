@@ -16,6 +16,7 @@ namespace Starter.Installers
 			Container.Bind<ITetriminoFactory>().To<TetriminoFactory>().AsSingle();
 			Container.Bind<TetriminoManager>().AsSingle();
 			Container.Bind<TetriminoMover>().AsSingle();
+			Container.Bind<TetriminoPartCreator>().AsSingle();
 			Container.BindInterfacesAndSelfTo<TetriminoSpawner>().AsSingle();
 			Container.BindInterfacesTo<GameTickTetriminoMover>().AsSingle();
 		}

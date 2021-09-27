@@ -3,6 +3,7 @@ using Config;
 using CurrentTetriminoManager;
 using Data;
 using Game;
+using Map;
 using Spawner.Infrastructure;
 using TetriminoProvider.Infrastructure;
 using Zenject;
@@ -16,20 +17,23 @@ namespace Spawner
 		private readonly MapConfig _mapConfig;
 		private readonly ITetriminoesProvider _tetriminoesProvider;
 		private readonly ITetriminoFactory _tetriminoFactory;
+		private readonly MapDataModel _mapDataModel;
 
 		public event Action TetriminoSpawned;
 
 		public TetriminoSpawner(GameLineChecker gameLineChecker,
 			MapConfig mapConfig,
 			ITetriminoesProvider tetriminoesProvider,
-			ITetriminoFactory tetriminoFactory, 
-			TetriminoManager tetriminoManager)
+			ITetriminoFactory tetriminoFactory,
+			TetriminoManager tetriminoManager, 
+			MapDataModel mapDataModel)
 		{
 			_gameLineChecker = gameLineChecker;
 			_mapConfig = mapConfig;
 			_tetriminoesProvider = tetriminoesProvider;
 			_tetriminoFactory = tetriminoFactory;
 			_tetriminoManager = tetriminoManager;
+			_mapDataModel = mapDataModel;
 		}
 
 		public void Initialize()
@@ -42,6 +46,8 @@ namespace Spawner
 			var tetriminoPiece = _tetriminoesProvider.GetPiece();
 			var newTetriminoPosition = GetTetriminoPosition();
 			var tetrimino = _tetriminoFactory.CreateTetrimino(tetriminoPiece, newTetriminoPosition);
+
+			_mapDataModel.SetTetriminoPartsToTheirInitialCells(tetrimino.TetriminoPartsCreationData);
 			_tetriminoManager.CurrentTetrimino = tetrimino;
 			TetriminoSpawned?.Invoke();
 		}

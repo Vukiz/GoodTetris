@@ -2,7 +2,7 @@ using Config;
 using UnityEngine;
 using Zenject;
 
-namespace Starter.Installers
+namespace Starter.Installers.SOInstallers
 {
     [CreateAssetMenu(fileName = "PrefabsInstaller", menuName = "Installers/PrefabsInstaller")]
     public class PrefabsInstaller: ScriptableObjectInstaller<PrefabsInstaller>

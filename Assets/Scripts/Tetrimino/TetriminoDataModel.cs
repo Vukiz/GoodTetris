@@ -10,11 +10,13 @@ namespace Tetrimino
 {
 	public class TetriminoDataModel
 	{
+		private const TetriminoRotation DefaultTetriminoRotation = TetriminoRotation.Up;
+
 		public static CellPosition TetriminoCenter => CellPosition.Zero;
 
 		public TetriminoPartsHolder PartsHolder { get; } = new TetriminoPartsHolder();
 		public TetriminoType TetriminoType { get; set; }
-		public TetriminoRotation TetriminoRotation { get; set; }
+		public TetriminoRotation TetriminoRotation { get; set; } = DefaultTetriminoRotation;
 		public CellPosition TetriminoPosition { get; set; }
 		public TetriminoCalculationPoint RotationPoint { get; set; }
 

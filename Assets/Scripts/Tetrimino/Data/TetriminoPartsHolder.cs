@@ -10,9 +10,9 @@ namespace Tetrimino.Data
 
 		public IEnumerable<CellPosition> PartsWorldPositions => Parts.Select(p => p.WorldCellPosition);
 
-		public void AddPart(TetriminoPartView partView)
+		public void AddParts(IEnumerable<TetriminoPartView> partViews)
 		{
-			Parts.Add(partView);
+			Parts.AddRange(partViews);
 		}
 
 		public void RemovePart(TetriminoPartView partView)
