@@ -22,9 +22,6 @@ namespace Map
             _mapConfig = mapConfig;
             _cellViewFactory = cellViewFactory;
             _mapDataModel = mapDataModel;
-        #if UNITY_EDITOR
-            _mapDataModel.SetDrawer(this);
-        #endif
         }
 
         public void Draw()
@@ -35,11 +32,6 @@ namespace Map
             {
                 DrawCell(cell.CellPosition);
             }
-        }
-
-        public CellView GetCellView(CellPosition cellPosition)
-        {
-            return _drawnCells[cellPosition];
         }
 
         private void DrawCell(CellPosition cellPosition)

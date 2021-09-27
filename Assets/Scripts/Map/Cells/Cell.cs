@@ -21,20 +21,10 @@ namespace Map.Cells
 
 		public TetriminoPartView OccupiedTetriminoView { get; private set; }
 
-	#if UNITY_EDITOR
-		private readonly MapDrawer _mapDrawer;
-		
-		public Cell(CellPosition cellPosition, MapDrawer mapDrawer)
-		{
-			_mapDrawer = mapDrawer;
-			CellPosition = cellPosition;
-		}
-	#else
 		public Cell(CellPosition cellPosition)
 		{
 			CellPosition = cellPosition;
 		}
-	#endif
 
 		public void SetPartView(TetriminoPartView tetriminoPartView)
 		{
@@ -46,19 +36,6 @@ namespace Map.Cells
 			{
 				tetriminoPartView.SetWorldPosition(CellPosition);
 			}
-
-		#if UNITY_EDITOR
-			if (isPartNotNull)
-			{
-				_mapDrawer.GetCellView(CellPosition).SetText(CellPosition);
-			}
-			else
-			{
-				_mapDrawer.GetCellView(CellPosition).SetText();
-			}
-
-			_mapDrawer.GetCellView(CellPosition).SetPartDebugActive(isPartNotNull);
-		#endif
 		}
 	}
 }

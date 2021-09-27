@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Config;
 using Data;
@@ -101,8 +100,9 @@ namespace Map
 			var setCells = cellsToMove.Aggregate("", (s, cell) => cell.Item2 + s + " ");
 			Debug.Log($"Set : {setCells}");
 		}
-		
-		public void SetTetriminoPartsToTheirInitialCells(IEnumerable<(CellPosition, TetriminoPartView)> tetriminoPartsCreationData)
+
+		public void SetTetriminoPartsToTheirInitialCells(
+			IEnumerable<(CellPosition, TetriminoPartView)> tetriminoPartsCreationData)
 		{
 			foreach (var (cellPosition, tetriminoPartView) in tetriminoPartsCreationData)
 			{
@@ -127,20 +127,11 @@ namespace Map
 				{
 					var cellPosition = new CellPosition(columnIndex, rowIndex);
 
-					row.Add(CreateCell(cellPosition));
+					row.Add(new Cell(cellPosition));
 				}
 
 				Grid.Add(row);
 			}
-		}
-
-		private Cell CreateCell(CellPosition cellPosition)
-		{
-		#if UNITY_EDITOR
-			return new Cell(cellPosition, _mapDrawer);
-		#else
-			return new Cell(cellPosition);
-		#endif
 		}
 
 		private void MoveAllUpperRowsDown(int firstEmptyRowIndex, int filledRowIndex)
@@ -172,13 +163,5 @@ namespace Map
 			cell1.SetPartView(secondCellOccupiedTetriminoView);
 			cell2.SetPartView(firstCellOccupiedTetriminoView);
 		}
-	#if UNITY_EDITOR 
-		private MapDrawer _mapDrawer;
-
-		public void SetDrawer(MapDrawer mapDrawer)
-		{
-			_mapDrawer = mapDrawer;
-		}
-	#endif
 	}
 }
