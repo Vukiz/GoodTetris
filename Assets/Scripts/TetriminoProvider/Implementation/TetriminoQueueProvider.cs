@@ -4,15 +4,14 @@ using TetriminoQueue;
 
 namespace TetriminoProvider.Implementation
 {
-	public class TetriminoQueueProvider : ITetriminoesProvider
+	public class TetriminoQueueProvider
 	{
-		private readonly BagRandomizer _bagRandomizer;
+		private readonly ITetriminoesProvider _tetriminoesProvider;
 		private readonly TetriminoQueueContainer _queueContainer;
 
-
-		public TetriminoQueueProvider(BagRandomizer bagRandomizer, TetriminoQueueContainer queueContainer)
+		public TetriminoQueueProvider(ITetriminoesProvider tetriminoesProvider, TetriminoQueueContainer queueContainer)
 		{
-			_bagRandomizer = bagRandomizer;
+			_tetriminoesProvider = tetriminoesProvider;
 			_queueContainer = queueContainer;
 			RefillQueue();
 		}
@@ -34,7 +33,7 @@ namespace TetriminoProvider.Implementation
 		{
 			while (!_queueContainer.IsQueueFull)
 			{
-				_queueContainer.AddPiece(_bagRandomizer.GetPiece());
+				_queueContainer.AddPiece(_tetriminoesProvider.GetPiece());
 			}
 		}
 	}

@@ -19,20 +19,17 @@ namespace Extensions
 				_ => throw new ArgumentOutOfRangeException(nameof(rotateDirection), rotateDirection, null)
 			};
 
-			var list = new List<CellMoveData>();
 			var translationPoint = tetriminoPosition + originPoint;
-			foreach (var cellPosition in oldCellPositions)
-			{
-				var cellPosTranslatedToTheOrigin = cellPosition.TranslateToPoint(-translationPoint);
-				var rotatedCellPosition = GetRotatedCellPosition(cellPosTranslatedToTheOrigin, sinus);
-				var cellPosTranslatedBack = rotatedCellPosition.TranslateToPoint(translationPoint);
-				list.Add(new CellMoveData(cellPosition, cellPosTranslatedBack));
-			}
 
-			return list;
+			return (from cellPosition in oldCellPositions
+				let cellPosTranslatedToTheOrigin = cellPosition.TranslateToPoint(-translationPoint)
+				let rotatedCellPosition = GetRotatedCellPosition(cellPosTranslatedToTheOrigin, sinus)
+				let cellPosTranslatedBack = rotatedCellPosition.TranslateToPoint(translationPoint)
+				select new CellMoveData(cellPosition, cellPosTranslatedBack)).ToList();
 		}
 
-		private static TetriminoCalculationPoint GetRotatedCellPosition(TetriminoCalculationPoint cellPosition, int sinus)
+		private static TetriminoCalculationPoint GetRotatedCellPosition(TetriminoCalculationPoint cellPosition,
+			int sinus)
 		{
 			var x = -cellPosition.Y * sinus;
 			var y = cellPosition.X * sinus;

@@ -27,6 +27,10 @@ namespace Data
 		{
 			return new CellPosition(cellPosition.X - cellPosition2.X, cellPosition.Y - cellPosition2.Y);
 		}
+		public static CellPosition operator -(CellPosition cellPosition)
+		{
+			return new CellPosition(-cellPosition.X, -cellPosition.Y);
+		}
 
 		public static CellPosition operator *(CellPosition cellPosition, int multiplier)
 		{

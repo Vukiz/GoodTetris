@@ -5,7 +5,7 @@ using Data;
 using Game;
 using Map;
 using Spawner.Infrastructure;
-using TetriminoProvider.Infrastructure;
+using TetriminoProvider.Implementation;
 using Zenject;
 
 namespace Spawner
@@ -15,7 +15,7 @@ namespace Spawner
 		private readonly TetriminoManager _tetriminoManager;
 		private readonly GameLineChecker _gameLineChecker;
 		private readonly MapConfig _mapConfig;
-		private readonly ITetriminoesProvider _tetriminoesProvider;
+		private readonly TetriminoQueueProvider _tetriminoesProvider;
 		private readonly ITetriminoFactory _tetriminoFactory;
 		private readonly MapDataModel _mapDataModel;
 
@@ -23,7 +23,7 @@ namespace Spawner
 
 		public TetriminoSpawner(GameLineChecker gameLineChecker,
 			MapConfig mapConfig,
-			ITetriminoesProvider tetriminoesProvider,
+			TetriminoQueueProvider tetriminoesProvider,
 			ITetriminoFactory tetriminoFactory,
 			TetriminoManager tetriminoManager, 
 			MapDataModel mapDataModel)

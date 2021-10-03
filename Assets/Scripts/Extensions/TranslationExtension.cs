@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Data;
 
 namespace Extensions
@@ -15,6 +17,13 @@ namespace Extensions
 		{
 			var calculationPoint = cellPosition + pointToTranslateInto;
 			return new CellPosition((int) calculationPoint.X, (int) calculationPoint.Y);
+		}
+
+
+		public static IEnumerable<CellPosition> OffsetPosition(this IEnumerable<CellPosition> initialPositions,
+			CellPosition offset)
+		{
+			return initialPositions.Select(initialPosition => initialPosition + offset);
 		}
 	}
 }

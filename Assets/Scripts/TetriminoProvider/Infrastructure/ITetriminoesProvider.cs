@@ -1,4 +1,3 @@
-using Tetrimino;
 using Tetrimino.Data;
 
 namespace TetriminoProvider.Infrastructure

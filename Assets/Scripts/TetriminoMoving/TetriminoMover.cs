@@ -63,26 +63,31 @@ namespace TetriminoMoving
 				return;
 			}
 
-			var newParts = currentTetrimino.Model.PartsPositionsInWorldCoordsWithRotation(rotateDirection)
-				.ToList();
+			var possiblePartsPositions = currentTetrimino.Model
+				.PartsPositionsInWorldCoordsWithRotation(rotateDirection);
 
-			if (!IsTetriminoRotateConfigValid(newParts))
+			//Check all positions to apply wall-kick
+			var validPartPosition = possiblePartsPositions
+				.FirstOrDefault(p => IsTetriminoRotateConfigValid(p.transformation));
+
+			if (validPartPosition == default)
 			{
 				return;
 			}
-			
+
 			var newTetriminoRotation = currentTetrimino.Model.NextRotation(rotateDirection);
 
 			currentTetrimino.SetNewTetriminoRotation(newTetriminoRotation);
+			currentTetrimino.SetNewTetriminoPosition(validPartPosition.tetriminoPosition);
 
-			UpdateMapCells(newParts);
+			UpdateMapCells(validPartPosition.transformation);
 		}
 
 		public IEnumerable<CellMoveData> GetDropPosition(TetriminoHolder tetriminoHolder,
 			ref CellPosition relativePoint)
 		{
 			var newCellPosition = relativePoint;
-			List<CellMoveData> newPartsTransformations;
+			IEnumerable<CellMoveData> newPartsTransformations;
 			CellPosition lastValidPos;
 			do
 			{
@@ -147,12 +152,12 @@ namespace TetriminoMoving
 			TetriminoMoved?.Invoke();
 		}
 
-		private bool IsTetriminoRotateConfigValid(IReadOnlyCollection<CellMoveData> newParts)
+		private bool IsTetriminoRotateConfigValid(IEnumerable<CellMoveData> newParts)
 		{
-			var isTetriminoInBounds = newParts.All(p => p.PositionTransformation.NewPosition.IsInBounds(_mapConfig));
-			var isMapSpaceEmpty = IsMapSpaceEmpty(newParts);
+			var list = newParts.ToList();
+			var isTetriminoInBounds = list.All(p => p.PositionTransformation.NewPosition.IsInBounds(_mapConfig));
 
-			return isTetriminoInBounds && isMapSpaceEmpty;
+			return isTetriminoInBounds && IsMapSpaceEmpty(list);
 		}
 
 		private void TetriminoDown(bool isAutoMove)
@@ -165,10 +170,11 @@ namespace TetriminoMoving
 			_currentTetriminoManager.TetriminoDownInvoke();
 		}
 
-		private bool IsMapSpaceEmpty(IReadOnlyCollection<CellMoveData> partsTransformation)
+		private bool IsMapSpaceEmpty(IEnumerable<CellMoveData> partsTransformation)
 		{
-			var allOldCellPositions = partsTransformation.Select(p => p.PositionTransformation.OldPosition);
-			var allNewCellPositions = partsTransformation.Select(p => p.PositionTransformation.NewPosition);
+			var list = partsTransformation.ToList();
+			var allOldCellPositions = list.Select(p => p.PositionTransformation.OldPosition);
+			var allNewCellPositions = list.Select(p => p.PositionTransformation.NewPosition);
 			var onlyNewPositions = allNewCellPositions.Except(allOldCellPositions);
 
 			return onlyNewPositions.All(p => !IsCellFilled(p));

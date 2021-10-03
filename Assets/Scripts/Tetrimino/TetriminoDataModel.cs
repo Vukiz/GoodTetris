@@ -4,6 +4,7 @@ using Data;
 using Extensions;
 using Map.Cells;
 using Tetrimino.Data;
+using Tetrimino.Helpers;
 using TetriminoMoving.Data;
 
 namespace Tetrimino
@@ -33,10 +34,32 @@ namespace Tetrimino
 				select new CellMoveData(oldPosition, newPosition)).ToList();
 		}
 
-		public IEnumerable<CellMoveData> PartsPositionsInWorldCoordsWithRotation(RotateDirection rotateDirection)
+		public List<(IEnumerable<CellMoveData> transformation, CellPosition tetriminoPosition)> PartsPositionsInWorldCoordsWithRotation(
+			RotateDirection rotateDirection)
 		{
-			var rotatedParts = PartsHolder.PartsWorldPositions.RotateWithMatrix(rotateDirection, TetriminoPosition, RotationPoint);
-			return rotatedParts;
+			var partsWorldPositions = PartsHolder.PartsWorldPositions.ToList();
+			var nextRotation = TetriminoRotation.Rotate(rotateDirection);
+			var wallKickOffsets = WallKickHelper.GetTestsByRotations(TetriminoType, TetriminoRotation, nextRotation);
+			var tests = new List<CellPosition> {CellPosition.Zero}; //to keep the order of tests
+			tests.AddRange(wallKickOffsets);
+			var result = new List<(IEnumerable<CellMoveData>, CellPosition)>();
+			foreach (var test in tests)
+			{
+				var offsetedTetriminoPosition = TetriminoPosition + test;
+				var rotatedPartsFromOffsetPoint = partsWorldPositions.OffsetPosition(test)
+					.RotateWithMatrix(rotateDirection, offsetedTetriminoPosition, RotationPoint).ToList();
+				for (var partIndex = 0; partIndex < rotatedPartsFromOffsetPoint.Count; partIndex++)
+				{
+					var positionTransformation = rotatedPartsFromOffsetPoint[partIndex];
+					rotatedPartsFromOffsetPoint[partIndex] =
+						new CellMoveData(partsWorldPositions[partIndex],
+							positionTransformation.PositionTransformation.NewPosition);
+				}
+
+				result.Add((rotatedPartsFromOffsetPoint, offsetedTetriminoPosition));
+			}
+
+			return result;
 		}
 	}
 }
